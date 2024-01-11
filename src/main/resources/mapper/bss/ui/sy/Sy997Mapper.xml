@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sy997"> <!-- 기본 namespace 단위 프로그램 id로 설정 -->
+    <resultMap id="hashMapVO" type="com.sjinc.bss.framework.data.HashMapVO"/>
+    <!-- Map은 카멜케이스 자동적용이 안 되어 따로 결과조회용 Map 사용함 -->
+    <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <!--테스트 조회-->
+    <select id="selectGrid" resultMap="hashMapResultVO">
+        SELECT /* sy997.selectGrid */ A.COMP_CD
+            , A.TEST_GB_CD, A.TEST_TEXT, A.TEST_NUM, A.BIGO
+        FROM SY_TEST_INFO A
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="compCd != null and compCd != ''">
+                AND A.COMP_CD = #{compCd, jdbcType=VARCHAR}
+            </if>
+            <if test="p_testGbCd != null and p_testGbCd.size > 0 "> <!-- 멀티셀렉트 조회시 -->
+                AND A.TEST_GB_CD IN
+                 <foreach item="item" index="index" collection="p_testGbCd" separator="," open="(" close=")">
+                 #{item, jdbcType=VARCHAR}
+                 </foreach>
+            </if>
+            <if test="p_testText != null and p_testText != ''">
+                AND A.TEST_TEXT like '%'||#{p_testText, jdbcType=VARCHAR}||'%'
+            </if>
+        </trim>
+    </select>
+
+    <!-- 테스트 입력 -->
+    <insert id="insert" parameterType="map">
+        insert into SY_TEST_INFO (COMP_CD, TEST_GB_CD, TEST_TEXT,
+                                <if test="testNum != null and testNum != ''"> TEST_NUM, </if>
+                                 BIGO, REG_USER_ID, REG_USER_IP, REG_DT)
+        values (#{compCd,jdbcType=VARCHAR}, #{testGbCd,jdbcType=VARCHAR}, #{testText,jdbcType=VARCHAR},
+            <if test="testNum != null and testNum != ''"> cast(#{testNum,jdbcType=VARCHAR} as NUMERIC), </if>
+                #{bigo,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userIp,jdbcType=VARCHAR}, CURRENT_TIMESTAMP )
+    </insert>
+
+    <!-- 테스트 수정 -->
+    <update id="updateByPrimaryKey" parameterType="map">
+        update SY_TEST_INFO
+        set TEST_TEXT = #{testText,jdbcType=VARCHAR},
+        <if test="testNum != null and testNum != ''">
+            TEST_NUM = cast(#{testNum,jdbcType=VARCHAR} as NUMERIC),
+        </if>
+            BIGO = #{bigo,jdbcType=VARCHAR},
+            UPDATE_USER_ID = #{userId,jdbcType=VARCHAR},
+            UPDATE_USER_IP = #{userIp,jdbcType=VARCHAR},
+            UPDATE_DT = CURRENT_TIMESTAMP
+        where COMP_CD = #{compCd,jdbcType=VARCHAR}
+          and TEST_GB_CD = #{testGbCd,jdbcType=VARCHAR}
+    </update>
+
+    <!-- 테스트 삭제 -->
+    <delete id="deleteByPrimaryKey" parameterType="map">
+        delete from SY_TEST_INFO
+        where COMP_CD = #{compCd,jdbcType=VARCHAR}
+          and TEST_GB_CD = #{testGbCd,jdbcType=VARCHAR}
+    </delete>
+
+    <!-- 테스트 merge -->
+    <update id="merge" parameterType="map">
+        WITH UPSERT AS(
+        UPDATE SY_TEST_INFO
+        SET TEST_TEXT = #{testText,jdbcType=VARCHAR},
+        <if test="testNum != null and testNum != ''">
+            TEST_NUM = cast(#{testNum,jdbcType=VARCHAR} as NUMERIC),
+        </if>
+            BIGO = #{bigo,jdbcType=VARCHAR},
+            UPDATE_USER_ID = #{userId,jdbcType=VARCHAR},
+            UPDATE_USER_IP = #{userIp,jdbcType=VARCHAR},
+            UPDATE_DT = CURRENT_TIMESTAMP
+        WHERE COMP_CD = #{compCd,jdbcType=VARCHAR}
+        AND TEST_GB_CD = #{testGbCd,jdbcType=VARCHAR}
+        RETURNING * )
+        INSERT
+        INTO SY_TEST_INFO (COMP_CD, TEST_GB_CD, TEST_TEXT,
+                           BIGO, REG_USER_ID, REG_USER_IP, REG_DT)
+        SELECT #{compCd,jdbcType=VARCHAR}, #{testGbCd,jdbcType=VARCHAR}, #{testText,jdbcType=VARCHAR},
+               #{bigo,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userIp,jdbcType=VARCHAR}, CURRENT_TIMESTAMP
+        WHERE NOT EXISTS(SELECT  * FROM UPSERT);
+    </update>
+</mapper>

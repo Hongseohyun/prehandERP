@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sy103">
+
+    <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <!--기관 정보 조회-->
+    <select id="selectGrid" resultMap="hashMapResultVO">
+        SELECT /* sy103.selectGrid */ COMP_CD, COMP_NM
+             , TEL_NO, FAX_NO, EMAIL
+             , BIGO, USE_YN
+             , ROW_NUMBER() OVER(ORDER BY COMP_CD, COMP_NM) AS RNUM
+          FROM SY_COMP_INFO 
+         WHERE (UPPER(COMP_CD) LIKE '%'||UPPER(#{compinfo, jdbcType=VARCHAR})||'%' OR COMP_NM LIKE '%${compinfo}%')
+         ORDER BY COMP_CD
+    </select>
+
+    <insert id="insert" parameterType="map">
+        insert into sy_comp_info (comp_cd, comp_nm, tel_no,
+                                  fax_no, email, bigo,
+                                  use_yn, reg_user_id, reg_user_ip,
+                                  reg_dt)
+        values (#{iCompCd,jdbcType=VARCHAR}, #{compNm,jdbcType=VARCHAR}, #{telNo,jdbcType=VARCHAR},
+                #{faxNo,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{bigo,jdbcType=VARCHAR},
+                #{useYn,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userIp,jdbcType=VARCHAR},
+                CURRENT_TIMESTAMP )
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="map">
+        update sy_comp_info
+        set comp_nm = #{compNm,jdbcType=VARCHAR},
+            tel_no = #{telNo,jdbcType=VARCHAR},
+            fax_no = #{faxNo,jdbcType=VARCHAR},
+            email = #{email,jdbcType=VARCHAR},
+            bigo = #{bigo,jdbcType=VARCHAR},
+            use_yn = #{useYn,jdbcType=VARCHAR},
+            update_user_id = #{userId,jdbcType=VARCHAR},
+            update_user_ip = #{userIp,jdbcType=VARCHAR},
+            update_dt = CURRENT_TIMESTAMP
+        where comp_cd = #{uCompCd,jdbcType=VARCHAR}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from sy_comp_info
+        where comp_cd = #{dCompCd,jdbcType=VARCHAR}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="hashMapResultVO">
+        select comp_cd, comp_nm, tel_no, fax_no, email, bigo, use_yn
+        from sy_comp_info
+        where comp_cd = #{sCompCd,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAll" resultMap="hashMapResultVO">
+        select comp_cd, comp_nm, tel_no, fax_no, email, bigo, use_yn
+        from sy_comp_info
+    </select>
+
+    <!--기관 중복 확인-->
+    <select id="selectCountByPrimaryKey" resultMap="hashMapResultVO">
+        SELECT COUNT(*) AS CNT
+        FROM SY_COMP_INFO
+        WHERE COMP_CD = #{cCompCd, jdbcType=VARCHAR}
+    </select>
+</mapper>

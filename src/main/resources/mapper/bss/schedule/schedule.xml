@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schedule">
+
+    <resultMap id="hashMapVO" type="com.sjinc.bss.framework.data.HashMapVO"/>
+    <resultMap id="hashMapStringVO" type="com.sjinc.bss.framework.data.HashMapStringVO"/>
+
+    <insert id="createAC_PayByInsp" >
+
+        <selectKey keyColumn="pay_no" order="BEFORE" resultType="java.lang.Long" keyProperty="pay_no">
+            /*schedule.createAC_PayByInsp.selectKey*/
+            select coalesce(max(pay_no),to_char(current_timestamp,'yyyymmdd') || '000000')::bigint pay_no
+            from ac_pay
+            where comp_cd='NARA0'
+            and substring (pay_no,1,8)=to_char(current_timestamp,'yyyymmdd')
+        </selectKey>
+
+        /*schedule.createAC_PayByInsp*/
+        INSERT INTO ac_pay
+        (
+            pay_no, ct_no, pay_remark, pay_yyyymm, pay_create_dd,
+            pay_amount, pay_amount_vat, pay_cd,
+            pay_create_cd, pay_bill_dd, ins_id, ins_ip, ins_dt
+            , pay_deadline_dd, bd_cd, comp_cd, pay_amount_service
+        )
+        select (row_number() over(order by 1) + #{pay_no})::text, a.ct_no, '스케줄러 자동생성', to_char(current_timestamp,'yyyymm'), to_char(current_timestamp,'yyyymmdd')
+        , a.ct_amount , a.ct_vat, '0'
+        , '월방비용', null,'system', '', current_timestamp
+        , to_char(current_timestamp + '2 month','yyyymmdd'), a.bd_cd , a.comp_cd, 0
+        from ct_contract a
+        left join ac_pay b on (a.ct_no = b.ct_no and b.pay_yyyymm = to_char(current_timestamp,'yyyymm'))
+        where b.ct_no is null
+        and a.ct_gb ='0001'
+        and to_char(current_timestamp,'yyyymm') between substring(a.ct_stdd,1,6) and to_char(to_date(case when a.ct_terminate_dd = '' or a.ct_terminate_dd is null then '29990101' else a.ct_terminate_dd end,'yyyymmdd') + interval '-1 day','yyyymm')
+
+    </insert>
+
+    <insert id="createAC_PayByEmg" >
+
+        <selectKey keyColumn="pay_no" order="BEFORE" resultType="java.lang.Long" keyProperty="pay_no">
+            /*schedule.createAC_PayByEmg.selectKey*/
+            select coalesce(max(pay_no),to_char(current_timestamp,'yyyymmdd') || '000000')::bigint pay_no
+            from ac_pay
+            where comp_cd='NARA0'
+            and substring (pay_no,1,8)=to_char(current_timestamp,'yyyymmdd')
+        </selectKey>
+
+        /*schedule.createAC_PayByEmg*/
+        INSERT INTO ac_pay
+        (
+        pay_no, ct_no, pay_remark, pay_yyyymm, pay_create_dd,
+        pay_amount, pay_amount_vat, pay_cd,
+        pay_create_cd, pay_bill_dd, ins_id, ins_ip, ins_dt
+        , pay_deadline_dd, bd_cd, comp_cd, pay_amount_service
+        )
+        select (row_number() over(order by 1) + #{pay_no})::text, a.ct_no, '스케줄러 자동생성', to_char(current_timestamp,'yyyymm'), to_char(current_timestamp,'yyyymmdd')
+        , a.ct_amount , a.ct_vat, '0'
+        , '위험물안전비용', null,'system', '', current_timestamp
+        , to_char(current_timestamp + '2 month','yyyymmdd'), a.bd_cd , a.comp_cd, 0
+        from ct_contract a
+        left join ac_pay b on (a.ct_no = b.ct_no and b.pay_yyyymm = to_char(current_timestamp,'yyyymm'))
+        where b.ct_no is null
+        and a.ct_gb ='0009'
+        and to_char(current_timestamp,'yyyymm') between substring(a.ct_stdd,1,6) and to_char(to_date(case when a.ct_terminate_dd = '' or a.ct_terminate_dd is null then '29990101' else a.ct_terminate_dd end,'yyyymmdd') + interval '-1 day','yyyymm')
+
+    </insert>
+
+</mapper>

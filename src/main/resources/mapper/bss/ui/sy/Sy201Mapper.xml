@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sy201">
+
+    <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <!-- 프로그램정보 조회-->
+    <select id="selectGrid" resultMap="hashMapResultVO">
+        SELECT /* sy201.selectGrid */ COMP_CD
+             , PGM_ID, PGM_NM
+             , PGM_ID AS OLD_PGM_ID
+             , PGM_DESC, PGM_PATH, USE_YN
+             , BIGO
+          FROM SY_PGM_INFO
+         WHERE (UPPER(PGM_ID) LIKE '%'||UPPER(#{pgminfo, jdbcType=VARCHAR})||'%' OR PGM_NM LIKE '%${pgminfo}%')
+         ORDER BY PGM_ID
+    </select>
+
+    <insert id="insert" parameterType="map">
+        insert into sy_pgm_info (comp_cd, pgm_id, pgm_nm,
+                                 pgm_desc, pgm_path, use_yn,
+                                 bigo, reg_user_id, reg_user_ip,
+                                 reg_dt)
+        values (#{compCd,jdbcType=VARCHAR}, #{pgmId,jdbcType=VARCHAR}, #{pgmNm,jdbcType=VARCHAR},
+                #{pgmDesc,jdbcType=VARCHAR}, #{pgmPath,jdbcType=VARCHAR}, #{useYn,jdbcType=VARCHAR},
+                #{bigo,jdbcType=VARCHAR}, #{regUserId,jdbcType=VARCHAR}, #{regUserIp,jdbcType=VARCHAR},
+                CURRENT_TIMESTAMP )
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="map">
+        update sy_pgm_info
+        set pgm_nm = #{pgmNm,jdbcType=VARCHAR},
+            pgm_desc = #{pgmDesc,jdbcType=VARCHAR},
+            pgm_path = #{pgmPath,jdbcType=VARCHAR},
+            use_yn = #{useYn,jdbcType=VARCHAR},
+            bigo = #{bigo,jdbcType=VARCHAR},
+            update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            update_user_ip = #{updateUserIp,jdbcType=VARCHAR},
+            update_dt = CURRENT_TIMESTAMP
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and pgm_id = #{pgmId,jdbcType=VARCHAR}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="map">
+        delete from sy_pgm_info
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and pgm_id = #{pgmId,jdbcType=VARCHAR}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="map" resultMap="hashMapResultVO">
+        select comp_cd, pgm_id, pgm_nm, pgm_desc, pgm_path, use_yn, bigo
+        from sy_pgm_info
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and pgm_id = #{pgmId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAll" resultMap="hashMapResultVO">
+        select comp_cd, pgm_id, pgm_nm, pgm_desc, pgm_path, use_yn, bigo
+        from sy_pgm_info
+    </select>
+</mapper>

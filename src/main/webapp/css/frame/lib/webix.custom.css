@@ -1,0 +1,167 @@
+.webix_invalid_cell {
+	position: initial;
+	background-image: url(/img/frame/program/img_true.png);
+	background-repeat: no-repeat;
+	background-position: 1px 1px;
+}
+
+.webix_ss_header div.webix_hcell {
+	text-align: center;
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.webix_ss_header div.webix_hcell.gridRequired {
+	color: #F54152;
+}
+
+.webix_dtable .textLeft {
+	text-align: left;
+}
+
+.webix_dtable .textCenter {
+	text-align: center;
+}
+
+.webix_dtable .textRight {
+	text-align: right;
+}
+
+.div.webix_row_select {
+	background: #3da3ef;
+}
+
+.webix_table_checkbox {
+	width: 13px;
+	height: 13px;
+	border: 0.1em solid #767676;
+	background-color: #fff;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	border-radius: 2px;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	vertical-align: inherit !important;
+}
+
+.webix_table_checkbox:checked {
+	background-image: url(/img/frame/checkbox/checkbox_ov_new.png);
+	background-color: #333;
+	border-color: #333;
+}
+
+.webix_dt_editor input[type="checkbox"].webix_table_checkbox {
+	width: 13px;
+	height: 13px;
+	padding: 0px;
+	border-color: #767676;
+}
+
+.webix_dt_editor input[type="checkbox"].webix_table_checkbox:checked {
+	border-color: #333;
+}
+
+.webix_table_masterCheckBox, .webix_table_checkbox {
+	margin-top: 7px;
+}
+
+.webix_hcell, .webix_cell {
+	padding: 0px 5px 0px 5px;
+    color: #53565a;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.webix_column > div, .webix_table_cell {
+	padding: 0 5px;
+}
+
+.webix_view {
+	border-top:1px solid #bbbcbc;
+	border-bottom:1px solid #d5d5d5;
+}
+
+.webix_table_masterCheckBox, .webix_table_checkbox {
+	vertical-align: middle;
+	margin:0px;
+	/* 	margin-top:4px; */
+	text-align: center;
+	/* Double-sized Checkboxes */
+	-ms-transform: scale(1.4); /* IE */
+	-moz-transform: scale(1.4); /* FF */
+	-webkit-transform: scale(1.4); /* Safari and Chrome */
+	-o-transform: scale(1.4); /* Opera */
+	/* 	  padding: 10px; */
+}
+
+.webix_invalid_cell:after {
+	border:0px none;
+}
+
+.webix_dt_editor select > option {
+	color: #777;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.webix_row_red{
+	color: #c01;
+}
+
+.webix_row_blue{
+	color: #0066ff;
+}
+
+.webix_row_bold{
+	font-weight: bold;
+}
+
+.webix_dtable .codeHelpCenter {
+	text-align : center;
+	padding-right : 40px;
+}
+
+.webix_dtable .codeHelpLeft {
+	text-align : left;
+	padding-right : 40px;
+}
+.webix_dtable .codeHelpRight {
+	text-align : right;
+	padding-right : 40px;
+}
+
+.defaultFooterCss {
+
+}
+.footerCenter{
+	text-align: center;
+}
+
+.footerRight{
+	text-align: right;
+}
+
+.footerLeft{
+	text-align: left;
+}
+._icon_calendar {
+	border: none;
+	width: 17px;
+	height: 17px;
+	cursor: pointer;
+	background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0iYmkgYmktY2FsZW5kYXIzIiB2aWV3Qm94PSIwIDAgMTYgMTYiPgogIDxwYXRoIGQ9Ik0xNCAwSDJhMiAyIDAgMCAwLTIgMnYxMmEyIDIgMCAwIDAgMiAyaDEyYTIgMiAwIDAgMCAyLTJWMmEyIDIgMCAwIDAtMi0yek0xIDMuODU3QzEgMy4zODQgMS40NDggMyAyIDNoMTJjLjU1MiAwIDEgLjM4NCAxIC44NTd2MTAuMjg2YzAgLjQ3My0uNDQ4Ljg1Ny0xIC44NTdIMmMtLjU1MiAwLTEtLjM4NC0xLS44NTdWMy44NTd6Ii8+CiAgPHBhdGggZD0iTTYuNSA3YTEgMSAwIDEgMCAwLTIgMSAxIDAgMCAwIDAgMnptMyAwYTEgMSAwIDEgMCAwLTIgMSAxIDAgMCAwIDAgMnptMyAwYTEgMSAwIDEgMCAwLTIgMSAxIDAgMCAwIDAgMnptLTkgM2ExIDEgMCAxIDAgMC0yIDEgMSAwIDAgMCAwIDJ6bTMgMGExIDEgMCAxIDAgMC0yIDEgMSAwIDAgMCAwIDJ6bTMgMGExIDEgMCAxIDAgMC0yIDEgMSAwIDAgMCAwIDJ6bTMgMGExIDEgMCAxIDAgMC0yIDEgMSAwIDAgMCAwIDJ6bS05IDNhMSAxIDAgMSAwIDAtMiAxIDEgMCAwIDAgMCAyem0zIDBhMSAxIDAgMSAwIDAtMiAxIDEgMCAwIDAgMCAyem0zIDBhMSAxIDAgMSAwIDAtMiAxIDEgMCAwIDAgMCAyeiIvPgo8L3N2Zz4=);
+}
+
+.checkbox_border {
+	border: 1px solid #68b5e4;
+}
+
+.checkbox_container {
+	height: 100%;
+	text-align: center;
+	vertical-align: bottom;
+	padding-top: 2%;
+}

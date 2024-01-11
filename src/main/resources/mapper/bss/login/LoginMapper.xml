@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="login">
+
+    <resultMap id="hashMapVO" type="com.sjinc.bss.framework.data.HashMapVO"/>
+    <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <delete id="deleteByPrimaryKey" parameterType="map">
+        delete from sy_user_info
+        where user_id = #{userId,jdbcType=VARCHAR}
+          and comp_cd = #{compCd,jdbcType=VARCHAR}
+    </delete>
+
+    <update id="updateByPrimaryKey" parameterType="map">
+        update sy_user_info
+        set user_nm = #{userNm,jdbcType=VARCHAR},
+            comp_cd = #{compCd,jdbcType=VARCHAR},
+            pwd = #{pwd,jdbcType=VARCHAR},
+            dept_cd = #{deptCd,jdbcType=VARCHAR},
+            belo_comp_nm = #{beloCompNm,jdbcType=VARCHAR},
+            posi_nm = #{posiNm,jdbcType=VARCHAR},
+            tel_no = #{telNo,jdbcType=VARCHAR},
+            email = #{email,jdbcType=VARCHAR},
+            user_gb_cd = #{userGbCd,jdbcType=VARCHAR},
+            ente_dd = #{enteDd,jdbcType=VARCHAR},
+            reti_dd = #{retiDd,jdbcType=VARCHAR},
+            use_yn = #{useYn,jdbcType=VARCHAR},
+            comu_mngr_yn = #{comuMngrYn,jdbcType=VARCHAR},
+            chei_yn = #{cheiYn,jdbcType=VARCHAR},
+            bigo = #{bigo,jdbcType=VARCHAR},
+            dueup_dd = #{dueupDd,jdbcType=VARCHAR},
+            fnl_pwd_chng_dd = #{fnlPwdChngDd,jdbcType=VARCHAR},
+            pwd_rst_yn = #{pwdRstYn,jdbcType=VARCHAR},
+            pwd_lk_yn = #{pwdLkYn,jdbcType=VARCHAR},
+            frst_login_yn = #{frstLoginYn,jdbcType=VARCHAR},
+            login_flr_tms = #{loginFlrTms,jdbcType=NUMERIC},
+            update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            update_user_ip = #{updateUserIp,jdbcType=VARCHAR},
+            update_dt = CURRENT_TIMESTAMP
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateLoginTryTime" parameterType="map">
+        update sy_user_info
+        set
+            pwd_lk_yn = #{pwdLkYn,jdbcType=VARCHAR},
+            login_flr_tms = #{loginFlrTms,jdbcType=NUMERIC},
+            update_dt = CURRENT_TIMESTAMP,
+            update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            update_user_ip = #{updateUserIp,jdbcType=VARCHAR}
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="hashMapResultVO">
+        select user_id, user_nm, comp_cd, pwd, dept_cd, belo_comp_nm, posi_nm, tel_no, email,
+               user_gb_cd, ente_dd, reti_dd, use_yn, comu_mngr_yn, chei_yn, bigo, dueup_dd, fnl_pwd_chng_dd,
+               pwd_rst_yn, pwd_lk_yn, frst_login_yn, login_flr_tms
+        from sy_user_info
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAll" resultMap="hashMapResultVO">
+        select user_id, user_nm, comp_cd, pwd, dept_cd, belo_comp_nm, posi_nm, tel_no, email,
+               user_gb_cd, ente_dd, reti_dd, use_yn, comu_mngr_yn, chei_yn, bigo, dueup_dd, fnl_pwd_chng_dd,
+               pwd_rst_yn, pwd_lk_yn, frst_login_yn, login_flr_tms
+        from sy_user_info
+    </select>
+
+    <insert id="insertLoginHstr" parameterType="map">
+        <selectKey keyProperty="hstrSqor" resultType="String" order="BEFORE">
+            select LPAD((COALESCE(TO_NUMBER(MAX(hstr_sqor), '999'),0) + 1)::TEXT, 3, '0')
+            from sy_login_hstr
+            where comp_cd = #{compCd,jdbcType=VARCHAR}
+            and hstr_dt = TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD')
+            and user_id = #{userId,jdbcType=VARCHAR}
+        </selectKey>
+        insert into sy_login_hstr (comp_cd, hstr_dt, user_id,
+        hstr_sqor, hstr_hh, hstr_kd,
+        login_flr_tms, acnt_lk_yn,
+        reg_user_ip, reg_dt
+        )
+        values (#{compCd,jdbcType=VARCHAR}, TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD'), #{userId,jdbcType=VARCHAR},
+        #{hstrSqor,jdbcType=VARCHAR}, TO_CHAR(CURRENT_TIMESTAMP,'HH24MISS'), #{hstrKd,jdbcType=VARCHAR},
+        #{loginFlrTms,jdbcType=NUMERIC}, #{acntLkYn,jdbcType=VARCHAR},
+        #{regUserIp,jdbcType=VARCHAR}, CURRENT_TIMESTAMP
+        )
+    </insert>
+</mapper>

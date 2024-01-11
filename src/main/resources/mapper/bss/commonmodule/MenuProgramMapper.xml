@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="menuProgram">
+    <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <!--사용자그룹별 메뉴목록-->
+    <select id="selectMenuListByUserGb" parameterType="map" resultMap="hashMapResultVO">
+        select comp_cd, menu_id, menu_nm, menu_img, menu_img_ov
+        from sy_menu_info
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and up_menu_id = '*'
+          and use_yn = 'Y'
+          and menu_id in ( select pgm_id from sy_menu_auth where user_gb_cd = #{userGbCd,jdbcType=VARCHAR} and menu_auth_yn='Y')
+        order by sortno, menu_id
+    </select>
+
+    <!--사용자그룹별 프로그램 정보 조회-->
+    <select id="selectMenuPgmListByUserGb" parameterType="map" resultMap="hashMapResultVO">
+    SELECT A.MENU_ID, A.UP_MENU_ID, A.MENU_NM
+             , A.DEPTH_FULL_NAME, A.MENU_GB, B.PGM_NM
+             , B.PGM_ID, B.PGM_PATH, B.BIGO
+          FROM (
+                SELECT COMP_CD, MENU_ID, UP_MENU_ID, MENU_NM
+                     , MENU_NM AS DEPTH_FULL_NAME
+                     , MENU_GB, SORTNO
+                     , NULL AS SUB_SORTNO
+                  FROM SY_MENU_INFO
+                 WHERE COMP_CD = #{compCd,jdbcType=VARCHAR}
+                   AND UP_MENU_ID = '*'
+                   AND USE_YN = 'Y'
+                   AND MENU_ID IN (
+                                   SELECT PGM_ID
+                                     FROM SY_MENU_AUTH
+                                    WHERE COMP_CD = #{compCd,jdbcType=VARCHAR}
+                                      AND USER_GB_CD = #{userGbCd,jdbcType=VARCHAR}
+                                      AND MENU_AUTH_YN = 'Y'
+                                  )
+                UNION ALL
+                SELECT A.COMP_CD, B.MENU_ID MENUID, B.UP_MENU_ID AS UP_MENU_ID, B.MENU_NM AS MENU_NM
+                     , CONCAT(A.MENU_NM, ' ＞ ') AS DEPTH_FULL_NAME
+                     , B.MENU_GB, A.SORTNO
+                     , B.SORTNO AS SUB_SORTNO
+                  FROM SY_MENU_INFO A
+                       LEFT JOIN SY_MENU_INFO B
+                         ON A.COMP_CD = B.COMP_CD
+                        AND B.UP_MENU_ID = A.MENU_ID
+                 WHERE A.COMP_CD = #{compCd,jdbcType=VARCHAR}
+                   AND A.UP_MENU_ID = '*'
+                   AND A.USE_YN = 'Y'
+                   AND B.MENU_ID IN (
+                                     SELECT PGM_ID
+                                       FROM SY_MENU_AUTH
+                                      WHERE COMP_CD = #{compCd,jdbcType=VARCHAR}
+                                        AND USER_GB_CD = #{userGbCd,jdbcType=VARCHAR}
+                                        AND MENU_AUTH_YN = 'Y'
+                                    )
+               ) A
+               LEFT OUTER JOIN SY_PGM_INFO B
+                 ON A.COMP_CD = B.COMP_CD
+                AND A.MENU_ID = B.PGM_ID
+        ORDER BY A.SORTNO, A.SUB_SORTNO
+  </select>
+
+    <!--사용자그룹별 프로그램 정보 조회-->
+    <select id="selectMenuBtnAuthByUserGbCd" parameterType="map" resultMap="hashMapResultVO">
+        SELECT A.COMP_CD, A.USER_GB_CD, A.PGM_ID, A.BTN_GB, B.BTN_NM
+        FROM SY_MENUBTN_AUTH A
+        LEFT OUTER JOIN ( SELECT CD_NM AS BTN_NM, ATTR_NM_1 AS BTN_GB, SORTNO FROM SY_CMM_CD WHERE COMP_CD = #{compCd,jdbcType=VARCHAR} AND CD_GB = 'SY040' ) B
+        ON ( A.BTN_GB = B.BTN_GB)
+        WHERE A.COMP_CD = #{compCd,jdbcType=VARCHAR}
+          AND A.USER_GB_CD = #{userGbCd,jdbcType=VARCHAR}
+        ORDER BY A.PGM_ID, B.SORTNO, A.BTN_GB
+    </select>
+
+    <!-- 메뉴 로그 저장-->
+    <insert id="insertMenuCnnHstr" parameterType="map">
+        <selectKey keyProperty="hstrSqor" resultType="String" order="BEFORE">
+            select LPAD(CAST((COALESCE(TO_NUMBER(MAX(hstr_sqor), '999'),0) + 1) AS VARCHAR), 3, '0')
+            from sy_menu_cnn_hstr
+            where comp_cd = #{compCd,jdbcType=VARCHAR}
+            and hstr_dt = TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD')
+            and user_id = #{userId,jdbcType=VARCHAR}
+            and pgm_id = #{pgmId,jdbcType=VARCHAR}
+        </selectKey>
+        insert into sy_menu_cnn_hstr (comp_cd, hstr_dt, user_id,
+                                      pgm_id, hstr_sqor, hstr_hh,
+                                      hstr_kd, reg_user_id, reg_user_ip,
+                                      reg_dt)
+        values (#{compCd,jdbcType=VARCHAR}, TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD'), #{userId,jdbcType=VARCHAR},
+                #{pgmId,jdbcType=VARCHAR}, #{hstrSqor,jdbcType=VARCHAR}, TO_CHAR(CURRENT_TIMESTAMP,'HH24MISS'),
+                #{hstrKd,jdbcType=VARCHAR}, #{regUserId,jdbcType=VARCHAR}, #{regUserIp,jdbcType=VARCHAR},
+                CURRENT_TIMESTAMP )
+    </insert>
+</mapper>

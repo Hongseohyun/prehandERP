@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sy301p1">
+
+
+    <update id="save">
+
+        update sy_user_info
+        set ente_dd = #{enteDd}
+            ,reti_dd = #{retiDd}
+            ,use_yn = #{useYn}
+            ,comu_mngr_yn = #{comuMngrYn}
+            ,update_dt = current_timestamp
+            ,update_user_id = #{loginId}
+            ,update_user_ip = #{loginIp}
+        where user_id = #{userId}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,224 @@
+/*contextPath*/
+body {
+    width: 100%;
+    height: 100%;
+}
+
+.bg {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width : 100%;
+    height: 100%;
+}
+
+.bgImage {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url(/img/project/login/img-login-bg.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.Container {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+.loginContainer {
+    width: 600px;
+    height: 600px;
+    padding: 90px 99px 113px 100px;
+    border-radius: 20px;
+    background-color: #fff;
+    position: absolute;
+    left: calc(50% - 500px);
+    top: calc(50% - 300px);
+    display: flex;
+    flex-direction: column;
+}
+
+#loginTitle{
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: 40px;
+}
+
+.loginTitleImg {
+    height: 28px;
+}
+
+.loginContainer label[for=loginID], .loginContainer label[for=loginPW],  .loginContainer label[for=saveID]{
+    height: 16px;
+
+    font-family: NotoSansCJKkr;
+    font-size: 16px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: -0.48px;
+    text-align: left;
+    color: #111;
+    margin-top: 15px;
+}
+
+.loginContainer label[for=loginID]{
+    margin-top: 30px;
+}
+
+#loginID, #loginPW{
+    margin-top: 10px;
+    height: 48px;
+    padding: 10px;
+    border-radius: 3px;
+    border: solid 1px #ccc;
+    font-size: 16px;
+}
+
+#loginID:focus , #loginPW:focus
+{
+    border: 1px solid #555;
+}
+
+#loginID::placeholder,
+#loginID::-webkit-input-placeholder,
+#loginID:-ms-input-placeholder,
+#loginPW::placeholder,
+#loginPW::-webkit-input-placeholder,
+#loginPW:-ms-input-placeholder
+{
+    /*font-family: 'RSM Font';*/
+}
+
+#btnLogin {
+    height: 48px;
+    margin-top: 30px;
+    border-radius: 3px;
+    background-color: #002685;
+    border:0;
+    color: #fff;
+    font-size: 16px;
+}
+
+#btnLogin:hover, #btnLogin:active  {
+    background-color: #002685;
+}
+
+/*
+
+#loginID, #loginPW, #siteNm{
+    position: absolute;
+    left: 0px;
+    width: 400px;
+    height: 60px;
+    font-size: 18px;
+    font-family: 'RSM Font';
+    font-weight: 500;
+    color: #53565a;
+    padding-left: 12px;
+    border: 1px solid #bbbcbc;
+    background-color: #ffffff;
+}
+
+
+
+
+#loginPW {
+    top: 312px;
+    left:25px;
+    font-family: sans-serif;
+	font-size: 18px;
+	font-weight: normal;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 1.67;
+	letter-spacing: normal;
+	text-align: left;
+	color: #53565a;
+}
+
+
+
+
+.loginContainer label[for=loginID], .loginContainer label[for=loginPW], .loginContainer label[for=siteNm] {
+    position: absolute;
+    left: 5px;
+    top: 222px;
+    height: 47px;
+    padding: 12px;
+    text-align: right;
+    width: 95px;
+    font-size: 13pt;
+    font-family: 'RSM Font';
+    color: #7a7a7a;
+    font-weight: bold;
+    padding-right:20px !important;
+}
+
+
+
+.loginContainer label[for=loginPW] {
+    top: 332px;
+}
+
+.optWrapper {
+    left: 100px;
+    top: 72px;
+}
+
+.loginContainer label[for=saveID] {
+    position: absolute;
+    top: 426px;
+    left: 24px;
+    text-align: left;
+    font-family: 'RSM Font';
+    font-weight: 500;
+    font-size:18px;
+    color: #000;
+}
+
+.joinUs {
+    position: absolute;
+    top: 265px;
+    right: 60px;
+    text-align: left;
+    font-family: 'RSM Font';
+    font-weight: 500;
+    font-size:16px;
+    color: #666;
+    cursor : pointer;
+}
+
+#loginText{
+    width: 42px;
+    height: 14px;
+    font-family: NotoSansCJKkr;
+    font-size: 16px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: -0.48px;
+    text-align: center;
+    color: #eee;
+}
+
+
+.searchRow {
+    margin:0px;
+    position: relative;
+}
+
+.searchRow>label.required {
+    background-image:none;
+}
+
+.searchRow>input[data-required] {
+    background-image:none;
+}*/

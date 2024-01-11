@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sy203">
+
+    <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <!--메뉴설정 조회-->
+    <select id="selectGrid1" resultMap="hashMapResultVO">
+        SELECT /* sy203.selectGrid1 */ A.COMP_CD, A.MENU_ID, A.MENU_NM, A.USE_YN
+          FROM SY_MENU_INFO A
+         WHERE A.COMP_CD = #{compCd, jdbcType=VARCHAR}
+           AND A.MENU_GB = '1'
+           AND A.USE_YN = 'Y'
+           AND (UPPER(A.MENU_ID) LIKE '%'||UPPER(#{menuinfo, jdbcType=VARCHAR})||'%' OR A.MENU_NM LIKE '%'||UPPER(#{menuinfo, jdbcType=VARCHAR})||'%')
+         ORDER BY A.MENU_ID
+    </select>
+
+    <select id="selectGrid2" resultMap="hashMapResultVO">
+        SELECT /* sy203.selectGrid2 */ A.PGM_ID, A.PGM_NM
+          FROM SY_PGM_INFO A
+               LEFT JOIN SY_MENU_INFO B
+                 ON A.COMP_CD = B.COMP_CD
+                AND A.PGM_ID = B.MENU_ID
+                AND B.MENU_GB = '2'
+                AND B.COMP_CD = #{compCd, jdbcType=VARCHAR}
+         WHERE A.COMP_CD = #{compCd, jdbcType=VARCHAR}
+           AND B.MENU_ID IS NULL
+           AND A.USE_YN = 'Y'
+        ORDER BY A.PGM_ID
+    </select>
+
+    <select id="selectGrid3" resultMap="hashMapResultVO">
+        SELECT /* sy203.selectGrid3 */ A.COMP_CD, A.MENU_ID, A.MENU_NM, A.SORTNO
+          FROM SY_MENU_INFO A
+         WHERE A.COMP_CD = #{compCd, jdbcType=VARCHAR}
+           AND A.MENU_GB = '2'
+           AND A.UP_MENU_ID = #{upMenuId, jdbcType=VARCHAR}
+        ORDER BY A.MENU_ID
+    </select>
+
+
+</mapper>

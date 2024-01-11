@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sy204">
+
+    <resultMap id="HashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <!--메뉴설정 조회-->
+    <select id="selectGrid" resultMap="HashMapResultVO">
+        SELECT /* sy204.selectGrid */ A.COMP_CD
+        , A.MENU_ID, A.MENU_NM
+        , A.UP_MENU_ID, B.MENU_NM AS UP_MENU_NM
+        , C.MENU_AUTH_YN
+        , C.BIGO
+        <foreach item="item" index="index" collection="collist" separator="," open=",">
+            COALESCE((
+            SELECT CASE WHEN COUNT(*) > 0 THEN 'Y'
+            ELSE 'N' END
+            FROM SY_MENUBTN_AUTH SA
+            WHERE C.COMP_CD = SA.COMP_CD
+            AND C.USER_GB_CD = SA.USER_GB_CD
+            AND C.PGM_ID = SA.PGM_ID
+            AND SA.COMP_CD = #{compCd, jdbcType=VARCHAR}
+            AND SA.BTN_GB = #{item.attrNm1, jdbcType=VARCHAR}), 'N' ) AS ${item.attrNm1}
+        </foreach>
+        FROM SY_MENU_INFO A
+        LEFT JOIN SY_MENU_INFO B
+        ON A.COMP_CD = B.COMP_CD
+        AND A.UP_MENU_ID = B.MENU_ID
+        LEFT JOIN SY_MENU_AUTH C
+        ON A.COMP_CD = C.COMP_CD
+        AND A.MENU_ID = C.PGM_ID
+        AND C.COMP_CD = #{compCd, jdbcType=VARCHAR}
+        AND C.USER_GB_CD = #{userGbCd, jdbcType=VARCHAR}
+        WHERE A.COMP_CD = #{compCd, jdbcType=VARCHAR}
+        ORDER BY COALESCE(B.SORTNO, A.SORTNO)
+        , CASE WHEN A.UP_MENU_ID = '*' THEN 0 ELSE 1 END
+        , A.SORTNO
+    </select>
+
+    <!-- 메뉴권한 -->
+    <select id="selectByPrimaryKey" parameterType="map" resultMap="HashMapResultVO">
+        select comp_cd, user_gb_cd, pgm_id, menu_auth_yn, bigo
+        from sy_menu_auth
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and user_gb_cd = #{userGbCd,jdbcType=VARCHAR}
+          and pgm_id = #{pgmId,jdbcType=VARCHAR}
+    </select>
+    <insert id="insert" parameterType="map">
+        insert into sy_menu_auth (comp_cd, user_gb_cd, pgm_id,
+                                  menu_auth_yn, bigo, reg_user_id,
+                                  reg_user_ip, reg_dt
+        )
+        values (#{compCd,jdbcType=VARCHAR}, #{userGbCd,jdbcType=VARCHAR}, #{pgmId,jdbcType=VARCHAR},
+                #{menuAuthYn,jdbcType=VARCHAR}, #{bigo,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+                #{userIp,jdbcType=VARCHAR}, CURRENT_TIMESTAMP
+               )
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="map">
+        update sy_menu_auth
+        set menu_auth_yn = #{menuAuthYn,jdbcType=VARCHAR},
+            bigo = #{bigo,jdbcType=VARCHAR},
+            update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            update_user_ip = #{updateUserIp,jdbcType=VARCHAR},
+            update_dt = CURRENT_TIMESTAMP
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and user_gb_cd = #{userGbCd,jdbcType=VARCHAR}
+          and pgm_id = #{pgmId,jdbcType=VARCHAR}
+    </update>
+    <delete id="deleteByPrimaryKey" parameterType="map">
+        delete from sy_menu_auth
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and user_gb_cd = #{userGbCd,jdbcType=VARCHAR}
+          and pgm_id = #{pgmId,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteByUserGbCd" parameterType="map">
+        delete from sy_menu_auth
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and user_gb_cd = #{userGbCd,jdbcType=VARCHAR}
+    </delete>
+
+    <!-- 메뉴버튼 권한 -->
+    <select id="selectBtnByPrimaryKey" parameterType="map" resultMap="HashMapResultVO">
+        select comp_cd, user_gb_cd, pgm_id, btn_gb
+        from sy_menubtn_auth
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and user_gb_cd = #{userGbCd,jdbcType=VARCHAR}
+          and pgm_id = #{pgmId,jdbcType=VARCHAR}
+          and btn_gb = #{btnGb,jdbcType=VARCHAR}
+    </select>
+    <insert id="insertBtn" parameterType="map">
+        insert into sy_menubtn_auth (comp_cd, user_gb_cd, pgm_id,
+                                     btn_gb, reg_user_id, reg_user_ip,
+                                     reg_dt )
+        values (#{compCd,jdbcType=VARCHAR}, #{userGbCd,jdbcType=VARCHAR}, #{pgmId,jdbcType=VARCHAR},
+                #{btnGb,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userIp,jdbcType=VARCHAR},
+                CURRENT_TIMESTAMP )
+    </insert>
+    <update id="updateBtnByPrimaryKey" parameterType="map">
+        update sy_menubtn_auth
+        set update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            update_user_ip = #{updateUserIp,jdbcType=VARCHAR},
+            update_dt = CURRENT_TIMESTAMP
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and user_gb_cd = #{userGbCd,jdbcType=VARCHAR}
+          and pgm_id = #{pgmId,jdbcType=VARCHAR}
+          and btn_gb = #{btnGb,jdbcType=VARCHAR}
+    </update>
+    <delete id="deleteBtnByPrimaryKey" parameterType="map">
+        delete from sy_menubtn_auth
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and user_gb_cd = #{userGbCd,jdbcType=VARCHAR}
+          and pgm_id = #{pgmId,jdbcType=VARCHAR}
+          and btn_gb = #{btnGb,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteBtnByUserGbCd" parameterType="map">
+        delete from sy_menubtn_auth
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and user_gb_cd = #{userGbCd,jdbcType=VARCHAR}
+    </delete>
+</mapper>

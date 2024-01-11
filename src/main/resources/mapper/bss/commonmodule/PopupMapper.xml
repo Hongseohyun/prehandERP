@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="popup">
+
+    <resultMap id="hashMapVO" type="com.sjinc.bss.framework.data.HashMapVO"/>
+    <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <!-- 유저팝업 조회 -->
+    <select id="selectUserPopupList" resultMap="hashMapResultVO">
+        SELECT /* popup.selectUserPopupList */
+              A.USER_ID, A.USER_NM, A.COMP_CD, A.DEPT_CD, B.DEPT_NM
+            , ROW_NUMBER() OVER(ORDER BY USER_ID, USER_NM) AS RNUM
+        FROM SY_USER_INFO A
+        INNER JOIN SY_DEPT_INFO B ON (A.COMP_CD = B.COMP_CD AND A.DEPT_CD = B.DEPT_CD)
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="compCd != null and compCd != '' and compCd != '*'.toString() ">
+                AND A.COMP_CD = #{compCd, jdbcType=VARCHAR}
+            </if>
+            <if test="userinfo != null and userinfo != ''">
+                AND ( A.USER_ID LIKE '%'||#{userinfo, jdbcType=VARCHAR}||'%'
+                    OR A.USER_NM LIKE '%'||#{userinfo, jdbcType=VARCHAR}||'%' )
+            </if>
+        </trim>
+        AND A.USE_YN = 'Y'
+        ORDER BY A.USER_ID
+    </select>
+
+    <!--유저 비밀번호 변경-->
+    <update id="updateUserPwd">
+        update sy_user_info
+        set pwd = #{pwd},
+            pwd_lk_yn = 'N',
+            user_nm = #{userNm,jdbcType=VARCHAR},
+            update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            update_user_ip = #{updateUserIp,jdbcType=VARCHAR},
+            fnl_pwd_chng_dd = TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD'),
+            update_dt = CURRENT_TIMESTAMP
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+</mapper>

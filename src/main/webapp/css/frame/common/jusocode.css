@@ -1,0 +1,44 @@
+@font-face {
+    font-family: nanum;
+}
+
+* {
+    font-family:nanum;
+    font-size: 10pt;
+    color: #151515;
+}
+body{
+    background: #fff;
+}
+.pop-address-search-layer3 {margin:0; width: calc(100% - 20px); padding: 10px;}
+
+/* */
+.pop-address-search-form {background:#fff}
+.pop-address-search-form .pop-address-field {text-align:center; border: 0; padding: 3px;}
+.pop-address-search-form .pop-address-field .pop-addr-wrap {display:inline-block; width:100%; position:relative; border:2px solid #F54152; padding: 0 0 2px 0;}
+.pop-address-search-form .pop-address-field *{height:39px; border:0 none; vertical-align:top}
+.pop-address-search-form .pop-address-field input[type="text"] {display:block; width: calc(100% - 49px); line-height:39px; margin-left: 10px; outline: none;}
+.pop-address-search-form .pop-address-field input[type="button"] {position:absolute; right:0; top:0; width:39px; background:url(/img/mngr/btn-search.png) 50% 50% no-repeat; outline: none;}
+/*.pop-address-search-form .pop-address-body .text-guide {margin-bottom:15px}*/
+.pop-address-search-form .pop-address-body table.data-col tbody tr:nth-child(odd) td {background:#f7f7f7}
+.pop-address-search-form .pop-address-body table.data-col tbody tr.nodata td {background:#fff}
+.pop-address-search-form .pop-address-body .paginate {text-align: center;}
+.pop-address-search-form .pop-address-body .paginate a {margin-top:20px; text-align: center; text-decoration: none; font-family: 'Nanum Square', sans-serif;}
+.pop-address-search-form .pop-address-detail {margin-top:40px; padding-top:30px; border-top:1px dotted #666}
+.pop-address-search-form .pop-address-detail .btns-submit {margin-top:20px}
+.pop-address-search-form .pop-address-detail .pop-address-jibun {margin-top:19px}
+.pop-address-search-layer {position:absolute; z-index:10; left:50%; top:50%; margin:-290px 0 0 -340px; width:680px; border:1px solid #000; -webkit-box-shadow: 5px 5px 12px -2px rgba(0,0,0,0.36); -moz-box-shadow: 5px 5px 12px -2px rgba(0,0,0,0.36); box-shadow: 5px 5px 12px -2px rgba(0,0,0,0.36);}
+
+.text-guide {font-family:'Nanum Square', sans-serif;font-size:13px;color:#000; padding-left:8px; line-height:1em; background:url(/img/mngr/bul-3x3-circle.png) 0 0.4em no-repeat}
+#totalCntDiv {font-family:'Nanum Square', sans-serif;font-size:13px;color:#000; line-height:1em;}
+
+/* date col */
+table.data-col {table-layout:fixed; border-top:1px solid #000; width: 100%;}
+table.data-col thead tr th {height:25px; padding:4px 0 5px; border-bottom:1px solid #000}
+table.data-col tbody tr td {height:25px; padding:4px 0; border-bottom:1px solid #000}
+table.data-col thead tr th {border-bottom:1px solid #000}
+table.data-col tbody tr td {border-bottom:1px solid #ddd; text-align:center; line-height:1.5em; font-size: 13px;}
+table.data-col tbody tr td.subj {text-align:left; }
+table.data-col tbody tr td.subj p {white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.1em}
+table.data-col tbody tr.notice td {background:#f5f5f5;}
+table.data-col tbody tr.notice td.subj p a {font-weight:bold;}

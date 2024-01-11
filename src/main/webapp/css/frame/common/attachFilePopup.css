@@ -1,0 +1,184 @@
+.attachFilePopupBackground {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 999999;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#attachFilePopupWindow {
+    display: none;
+}
+
+#attachFilePopupContainer {
+    position: absolute;
+    width: 300px;
+    border-radius: 2px;
+    background-color: #fff;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5);
+    top: calc(50% - 100px);
+    left: calc(50% - 150px);
+    padding-bottom: 15px;
+    /*border: 2px solid #FB7D10;*/
+}
+
+#attachFilePopupTitle {
+    background-color: #FB7D10;
+    border-top-radius: 2px;
+    color: #000;
+    font-weight: 500;
+    font-size: 13pt;
+    height: 30px;
+    padding-top: 4px;
+    text-align: center;
+    padding-left: 10px;
+}
+
+.attachFileArea {
+    margin-top: 15px;
+    margin-left: 5px;
+    height: 52px;
+    width: calc(100% - 10px);
+    background-color: #ffffff;
+    border: 1px solid #c6c6c6;
+    text-align: left;
+}
+
+#attachFileClose {
+    position: absolute;
+    top:5px;
+    right: 5px;
+    width: 21px;
+    height: 21px;
+    background-image: url('/img/frame/popup/b_p_close.png');
+    background-color: transparent;
+    border: 0px;
+    cursor: pointer;
+}
+
+#attachFileClose:hover {
+    background-image: url('/img/frame/popup/b_p_close_ov.png');
+}
+
+#attachFileClose:active {
+    /*background-image: url('/img/b_p_close_ov.png');*/
+}
+
+#btnForm {
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 32px;
+    background-image: -moz-linear-gradient(90deg, #f8f8f6, #f8f8f6);
+    background-image: -webkit-linear-gradient(90deg, #f8f8f6, #f8f8f6);
+    background-image: linear-gradient(90deg, #f8f8f6, #f8f8f6);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,startColorstr='#f8f8f6', endColorstr='#f8f8f6');
+    border: 1px solid #bbbcbc;
+    border-radius: 2px;
+    font-size: 11pt;
+    color: #53565a;
+}
+
+#btnForm:focus {
+    background-image: -moz-linear-gradient(90deg, #f8f8f6, #f8f8f6);
+    background-image: -webkit-linear-gradient(90deg, #f8f8f6, #f8f8f6);
+    background-image: linear-gradient(90deg, #f8f8f6, #f8f8f6);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,startColorstr='#f8f8f6', endColorstr='#f8f8f6');
+    border: 1px solid #bbbcbc;
+}
+
+#btnForm:hover {
+    background-image: -moz-linear-gradient(90deg, #53565a, #53565a);
+    background-image: -webkit-linear-gradient(90deg, #53565a, #53565a);
+    background-image: linear-gradient(90deg, #53565a, #53565a);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,startColorstr='#53565a', endColorstr='#53565a');
+    color: #fff;
+}
+
+#btnForm:active {
+    background-image: linear-gradient(#53565a, #53565a);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#53565a', endColorstr='#53565a');
+    color: #fff;
+}
+
+#confirmYes, #confirmNo, #btnForm {
+    width: 130px;
+}
+
+/* named upload */
+.fileBox .upload-name {
+	width: calc(100% - 170px);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	background-color: #fff;
+ 	border: 0;
+ 	color: #777;
+	font-size: 16px;
+	font-weight: 500;
+	padding-left: 4px;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+.fileBox .down-name {
+	width: calc(100% - 170px);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	background-color: #fff;
+ 	border: 0;
+ 	color: #777;
+	font-size: 16px;
+	font-weight: 500;
+	padding-left: 4px;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	cursor: pointer;
+}
+
+.fileBox label[for=ex_filename] {
+	color: #444;
+	font-size: 16px;
+	font-weight: 400;
+	background: linear-gradient(to bottom, #fff, #ddd);
+ 	border: 1px solid #ccc;
+ 	min-width: 84px;
+ 	height: 30px;
+ 	cursor: pointer;
+ 	padding: 0;
+ 	margin: 0;
+ 	text-align: center;
+ 	display: inline-block;
+}
+
+.fileBox label.ex_filename {
+	color: #444;
+	font-size: 16px;
+	font-weight: 400;
+	background: linear-gradient(to bottom, #fff, #ddd);
+ 	border: 1px solid #ccc;
+ 	min-width: 84px;
+ 	height: 30px;
+ 	cursor: pointer;
+ 	padding: 0;
+ 	margin: 0;
+ 	text-align: center;
+ 	display: inline-block;
+}
+
+.fileBox span.ex_filename {
+	color: #444;
+	font-size: 16px;
+	font-weight: 400;
+ 	padding-left: 5px;
+}
+
+.upload-hidden {
+	font-size:15px;
+	width: 80%;
+	height:30px;
+	margin: 20px 20px 20px 20px;
+}

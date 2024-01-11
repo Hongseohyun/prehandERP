@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sy303">
+    <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <!-- 로그인 로그 조회-->
+    <select id="selectGrid1" resultMap="hashMapResultVO">
+        SELECT A.COMP_CD, A.HSTR_DT, A.USER_ID, B.USER_NM
+             , A.HSTR_SQOR, SUBSTR(A.HSTR_HH,1,4) HSTR_HH, A.HSTR_KD, A.REG_USER_IP, '로그인' GB
+             , ROW_NUMBER() OVER(ORDER BY A.HSTR_DT, A.HSTR_HH, A.HSTR_SQOR) AS RNUM
+        FROM SY_LOGIN_HSTR A
+        LEFT OUTER JOIN SY_USER_INFO B ON (A.COMP_CD = B.COMP_CD AND A.USER_ID = B.USER_ID)
+         WHERE 1=1
+        <if test="compCd != null and compCd != '' and compCd != '*'.toString() ">
+            AND A.COMP_CD = #{compCd, jdbcType=VARCHAR}
+        </if>
+        <if test="hstrDt1 != null and hstrDt1 != '' and hstrDt2 != null and hstrDt2 != '' ">
+            AND A.HSTR_DT BETWEEN REPLACE(#{hstrDt1, jdbcType=VARCHAR}, '-','') AND REPLACE(#{hstrDt2, jdbcType=VARCHAR}, '-','')
+        </if>
+        <if test="userNm != null and userNm != '' ">
+            AND (A.USER_ID LIKE '%'||#{userNm, jdbcType=VARCHAR}||'%'
+                OR B.USER_NM LIKE '%'||#{userNm, jdbcType=VARCHAR}||'%')
+        </if>
+    </select>
+
+    <!-- 메뉴 로그 조회-->
+    <select id="selectGrid2" resultMap="hashMapResultVO">
+        SELECT A.COMP_CD, A.HSTR_DT, A.USER_ID, B.USER_NM, A.PGM_ID, C.PGM_NM
+             , A.HSTR_SQOR, SUBSTR(A.HSTR_HH,1,4) HSTR_HH, A.HSTR_KD, A.REG_USER_IP, '메뉴' GB
+             , ROW_NUMBER() OVER(ORDER BY A.HSTR_DT, A.HSTR_HH, A.HSTR_SQOR) AS RNUM
+        FROM SY_MENU_CNN_HSTR A
+        LEFT OUTER JOIN SY_USER_INFO B ON (A.COMP_CD = B.COMP_CD AND A.USER_ID = B.USER_ID)
+        LEFT OUTER JOIN SY_PGM_INFO C ON (A.COMP_CD = C.COMP_CD AND A.PGM_ID = C.PGM_ID)
+        WHERE 1=1
+        <if test="compCd != null and compCd != '' and compCd != '*'.toString() ">
+            AND A.COMP_CD = #{compCd, jdbcType=VARCHAR}
+        </if>
+        <if test="hstrDt1 != null and hstrDt1 != '' and hstrDt2 != null and hstrDt2 != '' ">
+            AND A.HSTR_DT BETWEEN REPLACE(#{hstrDt1, jdbcType=VARCHAR}, '-','') AND REPLACE(#{hstrDt2, jdbcType=VARCHAR}, '-','')
+        </if>
+        <if test="userNm != null and userNm != '' ">
+            AND (A.USER_ID LIKE '%'||#{userNm, jdbcType=VARCHAR}||'%'
+            OR B.USER_NM LIKE '%'||#{userNm, jdbcType=VARCHAR}||'%')
+        </if>
+    </select>
+</mapper>

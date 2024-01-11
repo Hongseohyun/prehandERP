@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sy302">
+
+    <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <!--기관 정보 조회-->
+    <select id="selectGrid" resultMap="hashMapResultVO">
+        SELECT COMP_CD, DEPT_CD, DEPT_NM
+             , COTR_TEAM_YN, POLI_TEAM_YN
+             , USE_YN , SORTNO, BIGO
+             , ROW_NUMBER() OVER(ORDER BY COMP_CD, DEPT_CD) AS RNUM
+        , (select count(*) from sy_user_info where comp_cd = A.comp_cd and dept_cd = A.dept_cd ) as user_cnt
+        FROM SY_DEPT_INFO A
+         WHERE 1=1
+        <if test="compCd != null and compCd != '' and compCd != '*'.toString() ">
+            AND COMP_CD = #{compCd, jdbcType=VARCHAR}
+        </if>
+
+           and DEPT_NM LIKE '%'||UPPER(#{deptNm, jdbcType=VARCHAR})||'%'
+
+    </select>
+
+    <!--부서코드로 사용자 조회-->
+    <select id="selectUserByDept" resultMap="hashMapResultVO">
+        SELECT /*sy302.selectUserByDept*/
+                COUNT(*) CNT
+        FROM SY_USER_INFO
+        WHERE COMP_CD = #{compCd, jdbcType=VARCHAR}
+        AND DEPT_CD = #{deptCd, jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="map" resultMap="hashMapResultVO">
+        select comp_cd, dept_cd, dept_nm, cotr_team_yn, poli_team_yn, use_yn, sortno, bigo
+        from sy_dept_info
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and dept_cd = #{deptCd,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insert" parameterType="map">
+        insert into sy_dept_info (comp_cd, dept_cd, dept_nm,
+                                  cotr_team_yn, poli_team_yn, use_yn,
+        <if test="sortno != null and sortno != ''">
+                                  sortno,
+        </if>
+                                  bigo, reg_user_id,
+                                  reg_user_ip, reg_dt
+        )
+        values (#{compCd,jdbcType=VARCHAR}, #{deptCd,jdbcType=VARCHAR}, #{deptNm,jdbcType=VARCHAR},
+                #{cotrTeamYn,jdbcType=VARCHAR}, #{poliTeamYn,jdbcType=VARCHAR}, #{useYn,jdbcType=VARCHAR},
+        <if test="sortno != null and sortno != ''">
+                cast(#{sortno,jdbcType=NUMERIC} as NUMERIC),
+        </if>
+                #{bigo,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+                #{userIp,jdbcType=VARCHAR}, CURRENT_TIMESTAMP
+               )
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="map">
+        update sy_dept_info
+        set dept_nm = #{deptNm,jdbcType=VARCHAR},
+            cotr_team_yn = #{cotrTeamYn,jdbcType=VARCHAR},
+            poli_team_yn = #{poliTeamYn,jdbcType=VARCHAR},
+            use_yn = #{useYn,jdbcType=VARCHAR},
+        <if test="sortno != null and sortno != ''">
+            sortno = cast(#{sortno,jdbcType=NUMERIC} as NUMERIC),
+        </if>
+            bigo = #{bigo,jdbcType=VARCHAR},
+            update_user_id = #{userId,jdbcType=VARCHAR},
+            update_user_ip = #{userIp,jdbcType=VARCHAR},
+            update_dt = CURRENT_TIMESTAMP
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and dept_cd = #{deptCd,jdbcType=VARCHAR}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="map">
+        delete from sy_dept_info
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and dept_cd = #{deptCd,jdbcType=VARCHAR}
+    </delete>
+
+    <!--팀 ID 중복 확인-->
+    <select id="selectCountByPrimaryKey" resultMap="hashMapResultVO">
+        SELECT COUNT(*) AS CNT
+        FROM SY_DEPT_INFO
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and dept_cd = #{deptCd,jdbcType=VARCHAR}
+    </select>
+</mapper>

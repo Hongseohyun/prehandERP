@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="common">
+
+    <resultMap id="hashMapVO" type="com.sjinc.bss.framework.data.HashMapVO"/>
+    <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <!--저장할 file key 읽어오기-->
+    <select id="selectAttachKey" resultType="java.lang.String">
+        select f_getSeq(#{compCd},'ATF',30)
+    </select>
+
+    <!-- 파일 조회 -->
+    <select id="selectAttachList" resultMap="hashMapResultVO">
+        select comp_cd, atfi_id, atfi_seq
+            , reg_pgm_id, serv_path, serv_file_nm
+            , orig_file_nm, file_exte, file_size, dele_yn
+        from sy_atfi_info
+        where comp_cd = #{compCd}
+          and atfi_id = #{atfiId}
+          and dele_yn = 'N'
+    </select>
+
+    <!-- 파일 저장 -->
+    <insert id="insertAttach" parameterType="map">
+
+        <selectKey resultType="java.lang.Integer" keyProperty="atfiSeq" order="BEFORE">
+            select COALESCE(MAX(atfi_seq), 0) + 1
+            from sy_atfi_info sai
+            where comp_cd =#{compCd}
+            and atfi_id = #{atfiId}
+        </selectKey>
+
+        insert into sy_atfi_info (comp_cd, atfi_id, atfi_seq,
+        reg_pgm_id, serv_path, serv_file_nm,
+        orig_file_nm, file_exte, file_size,
+        dele_yn, reg_user_id, reg_user_ip,
+        reg_dt)
+        values (#{compCd,jdbcType=VARCHAR}, #{atfiId,jdbcType=VARCHAR}, #{atfiSeq,jdbcType=NUMERIC},
+        #{regPgmId,jdbcType=VARCHAR}, #{servPath,jdbcType=VARCHAR}, #{servFileNm,jdbcType=VARCHAR},
+        #{origFileNm,jdbcType=VARCHAR}, #{fileExte,jdbcType=VARCHAR}, #{fileSize,jdbcType=NUMERIC},
+        #{deleYn,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userIp,jdbcType=VARCHAR},
+        CURRENT_TIMESTAMP )
+    </insert>
+
+    <!-- 파일 수정 -->
+    <update id="updateAttach">
+        update sy_atfi_info
+        set reg_pgm_id = #{regPgmId,jdbcType=VARCHAR},
+            serv_path = #{servPath,jdbcType=VARCHAR},
+            serv_file_nm = #{servFileNm,jdbcType=VARCHAR},
+            orig_file_nm = #{origFileNm,jdbcType=VARCHAR},
+            file_exte = #{fileExte,jdbcType=VARCHAR},
+            file_size = #{fileSize,jdbcType=NUMERIC},
+            dele_yn = #{deleYn,jdbcType=VARCHAR},
+            update_user_id = #{userId,jdbcType=VARCHAR},
+            update_user_ip = #{userIp,jdbcType=VARCHAR},
+            update_dt = CURRENT_TIMESTAMP
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and atfi_id = #{atfiId,jdbcType=VARCHAR}
+          and atfi_seq = #{atfiSeq,jdbcType=NUMERIC}
+    </update>
+
+    <!-- 파일 삭제(flag 변경) -->
+    <update id="deleteAttach">
+        UPDATE sy_atfi_info
+        SET dele_yn = 'Y'
+          , update_user_id = #{userId}
+          , update_user_ip = #{userIp}
+          , update_dt = CURRENT_TIMESTAMP
+        WHERE comp_cd = #{compCd}
+          AND atfi_id = #{atfiId}
+        <if test="atfiSeq != '' and atfiSeq != null">
+          AND atfi_seq = #{atfiSeq}
+        </if>
+    </update>
+
+    <!-- 파일 삭제 -->
+    <delete id="deleteAttachFull" parameterType="map">
+        delete from sy_atfi_info
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and atfi_id = #{atfiId,jdbcType=VARCHAR}
+          and atfi_seq = #{atfiSeq,jdbcType=NUMERIC}
+    </delete>
+</mapper>

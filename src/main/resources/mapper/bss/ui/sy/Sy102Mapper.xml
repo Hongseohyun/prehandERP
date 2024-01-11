@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sy102">
+  <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+  <!--시스템설정 조회-->
+  <select id="selectGrid" resultMap="hashMapResultVO">
+    SELECT /* sy102.selectGrid */ COMP_CD
+    , STD_CD, STD_NM
+    , STD_VAL
+    , BIGO, USE_YN
+    FROM SY_SYS_CONF
+    <trim prefix="where" prefixOverrides="and|or">
+      <if test="compCd != null and compCd != '' and compCd != '*'.toString() ">AND COMP_CD = #{compCd, jdbcType=VARCHAR}</if>
+      <if test="stdInfo != null">
+        AND (UPPER(STD_CD) LIKE '%'||UPPER(#{stdInfo, jdbcType=VARCHAR})||'%' OR STD_NM LIKE '%${stdInfo}%')
+      </if>
+    </trim>
+    ORDER BY COMP_CD, STD_CD
+  </select>
+
+  <insert id="insert" parameterType="map">
+    insert into sy_sys_conf (comp_cd, std_cd, std_nm,
+                             std_val, bigo, use_yn,
+                             reg_user_id, reg_user_ip, reg_dt)
+    values (#{compCd,jdbcType=VARCHAR}, #{stdCd,jdbcType=VARCHAR}, #{stdNm,jdbcType=VARCHAR},
+            #{stdVal,jdbcType=VARCHAR}, #{bigo,jdbcType=VARCHAR}, #{useYn,jdbcType=VARCHAR},
+            #{userId,jdbcType=VARCHAR}, #{userIp,jdbcType=VARCHAR}, CURRENT_TIMESTAMP )
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="map">
+    update sy_sys_conf
+    set std_nm = #{stdNm,jdbcType=VARCHAR},
+        std_val = #{stdVal,jdbcType=VARCHAR},
+        bigo = #{bigo,jdbcType=VARCHAR},
+        use_yn = #{useYn,jdbcType=VARCHAR},
+        update_user_id = #{userId,jdbcType=VARCHAR},
+        update_user_ip = #{userIp,jdbcType=VARCHAR},
+        update_dt = CURRENT_TIMESTAMP
+    where comp_cd = #{compCd,jdbcType=VARCHAR}
+      and std_cd = #{stdCd,jdbcType=VARCHAR}
+  </update>
+
+  <delete id="deleteByPrimaryKey" parameterType="map">
+    delete from sy_sys_conf
+    where comp_cd = #{compCd,jdbcType=VARCHAR}
+      and std_cd = #{stdCd,jdbcType=VARCHAR}
+  </delete>
+
+  <select id="selectByPrimaryKey" parameterType="map" resultMap="hashMapResultVO">
+    select comp_cd, std_cd, std_nm, std_val, bigo, use_yn
+    from sy_sys_conf
+    where comp_cd = #{compCd,jdbcType=VARCHAR}
+      and std_cd = #{stdCd,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAll" resultMap="hashMapResultVO">
+    select comp_cd, std_cd, std_nm, std_val, bigo, use_yn
+    from sy_sys_conf
+  </select>
+</mapper>

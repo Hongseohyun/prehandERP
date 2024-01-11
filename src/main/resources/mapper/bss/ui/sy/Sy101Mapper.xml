@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sy101">
+
+    <resultMap id="hashMapVO" type="com.sjinc.bss.framework.data.HashMapVO"/>
+    <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <!--공통 코드 조회-->
+  <select id="selectGrid" resultMap="hashMapResultVO">
+    SELECT /* sy101.selectGrid */ A.COMP_CD
+    , A.CD_GB, A.CD_GB_NM
+    , A.CD, A.CD_NM
+    , A.SORTNO ,A.BIGO
+    , A.SYS_YN, A.USE_YN
+    , A.ATTR_NM_1, A.ATTR_NM_2, A.ATTR_NM_3, A.ATTR_NM_4, A.ATTR_NM_5
+    <if test="ob1 != null">
+      , CASE WHEN COALESCE(B.SYS_YN_CNT,0) <![CDATA[>]]> 0 THEN 'Y'
+      ELSE 'N' END AS DTL_SYS_YN
+    </if>
+    FROM SY_CMM_CD A
+    <if test="ob1 != null">
+      LEFT JOIN (SELECT COMP_CD, CD_GB, COUNT(*) SYS_YN_CNT
+      FROM SY_CMM_CD
+      WHERE SYS_YN = 'Y'
+      GROUP BY COMP_CD, CD_GB
+      ) B
+      ON A.COMP_CD = B.COMP_CD
+      AND A.CD = B.CD_GB
+    </if>
+    <trim prefix="where" prefixOverrides="and|or">
+      <if test="compCd != null and compCd != '' and compCd != '*'.toString()">AND A.COMP_CD = #{compCd, jdbcType=VARCHAR}</if>
+      <if test="cdGb != null and cdGb != ''">AND A.CD_GB = #{cdGb, jdbcType=VARCHAR}</if>
+    </trim>
+    <if test="ob1 != null">
+      ORDER BY A.COMP_CD, A.CD_GB, A.CD
+    </if>
+    <if test="ob2 != null">
+      ORDER BY A.SORTNO
+    </if>
+  </select>
+
+    <!-- 공통코드 삭제-->
+    <delete id="deleteByPrimaryKey" parameterType="map">
+    delete from sy_cmm_cd
+    where comp_cd = #{compCd,jdbcType=VARCHAR}
+      and cd_gb = #{cdGb,jdbcType=VARCHAR}
+      and cd = #{cd,jdbcType=VARCHAR}
+    </delete>
+
+    <!-- 공통코드구분 삭제-->
+    <delete id="deleteByCdGb" parameterType="map">
+        delete from sy_cmm_cd
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and cd_gb = #{cdGb,jdbcType=VARCHAR}
+    </delete>
+
+    <!-- 공통코드 저장 -->
+    <insert id="insert" parameterType="map">
+        insert into sy_cmm_cd (comp_cd, cd_gb, cd,
+                               cd_gb_nm, cd_nm, sortno,
+                               bigo, sys_yn, use_yn,
+                               attr_nm_1, attr_nm_2, attr_nm_3,
+                               attr_nm_4, attr_nm_5, reg_user_id,
+                               reg_user_ip, reg_dt
+        )
+        values (#{compCd,jdbcType=VARCHAR}, #{cdGb,jdbcType=VARCHAR}, #{cd,jdbcType=VARCHAR},
+                #{cdGbNm,jdbcType=VARCHAR}, #{cdNm,jdbcType=VARCHAR}, CAST(#{sortno,jdbcType=VARCHAR} AS NUMERIC),
+                #{bigo,jdbcType=VARCHAR}, #{sysYn,jdbcType=VARCHAR}, #{useYn,jdbcType=VARCHAR},
+                #{attrNm1,jdbcType=VARCHAR}, #{attrNm2,jdbcType=VARCHAR}, #{attrNm3,jdbcType=VARCHAR},
+                #{attrNm4,jdbcType=VARCHAR}, #{attrNm5,jdbcType=VARCHAR}, #{regUserId,jdbcType=VARCHAR},
+                #{regUserIp,jdbcType=VARCHAR}, CURRENT_TIMESTAMP
+               )
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="map">
+        update sy_cmm_cd
+        set cd_gb_nm = #{cdGbNm,jdbcType=VARCHAR},
+            cd_nm = #{cdNm,jdbcType=VARCHAR},
+            sortno = #{sortno,jdbcType=NUMERIC},
+            bigo = #{bigo,jdbcType=VARCHAR},
+            sys_yn = #{sysYn,jdbcType=VARCHAR},
+            use_yn = #{useYn,jdbcType=VARCHAR},
+            attr_nm_1 = #{attrNm1,jdbcType=VARCHAR},
+            attr_nm_2 = #{attrNm2,jdbcType=VARCHAR},
+            attr_nm_3 = #{attrNm3,jdbcType=VARCHAR},
+            attr_nm_4 = #{attrNm4,jdbcType=VARCHAR},
+            attr_nm_5 = #{attrNm5,jdbcType=VARCHAR},
+            update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            update_user_ip = #{updateUserIp,jdbcType=VARCHAR},
+            update_dt = CURRENT_TIMESTAMP
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and cd_gb = #{cdGb,jdbcType=VARCHAR}
+          and cd = #{cd,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByPrimaryKey" parameterType="map" resultMap="hashMapResultVO">
+        select comp_cd, cd_gb, cd, cd_gb_nm, cd_nm, sortno, bigo, sys_yn, use_yn, attr_nm_1,
+               attr_nm_2, attr_nm_3, attr_nm_4, attr_nm_5
+        from sy_cmm_cd
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and cd_gb = #{cdGb,jdbcType=VARCHAR}
+          and cd = #{cd,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByCdGb" parameterType="map" resultMap="hashMapResultVO">
+        select comp_cd, cd_gb, cd, cd_gb_nm, cd_nm, sortno, bigo, sys_yn, use_yn, attr_nm_1,
+               attr_nm_2, attr_nm_3, attr_nm_4, attr_nm_5
+        from sy_cmm_cd
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and cd_gb = #{cdGb,jdbcType=VARCHAR}
+          and use_yn = 'Y'
+        order by sortno, cd
+    </select>
+</mapper>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sy301">
+
+    <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <!--사용자 정보 조회-->
+    <select id="selectGrid" resultMap="hashMapResultVO">
+        SELECT /* sy301.selectGrid */
+               A.USER_ID, A.USER_NM, A.COMP_CD, A.DEPT_CD, B.DEPT_NM, A.BELO_COMP_NM,
+               A.POSI_NM, A.USER_GB_CD, C.CD_NM, A.ENTE_DD, A.RETI_DD,
+    	       A.COMU_MNGR_YN, A.CHEI_YN, A.USE_YN, A.TEL_NO, A.EMAIL , A.BIGO,
+               ROW_NUMBER() OVER(ORDER BY USER_ID, USER_NM) AS RNUM
+          FROM SY_USER_INFO A, SY_DEPT_INFO B, (select COMP_CD, CD, CD_NM FROM SY_CMM_CD WHERE CD_GB = 'SY020') C
+         WHERE A.COMP_CD = B.COMP_CD
+           AND A.DEPT_CD = B.DEPT_CD
+           AND A.COMP_CD = C.COMP_CD
+           AND A.USER_GB_CD = C.CD
+           <if test="compCd != null and compCd != '' and compCd != '*'.toString() ">
+               AND A.COMP_CD = #{compCd, jdbcType=VARCHAR}
+           </if>
+           <if test="userNm != null and userNm != '' and userNm != '*'.toString() ">
+               AND USER_NM LIKE '%'||UPPER(#{userNm, jdbcType=VARCHAR})||'%'
+           </if>
+           <if test="useYn != null and useYn != '' and useYn != '*'.toString() ">
+               AND A.USE_YN = #{useYn, jdbcType=VARCHAR}
+           </if>
+         ORDER BY A.USER_ID
+    </select>
+
+    <!--비밀번호 초기화-->
+    <update id="updateByChangePw" parameterType="map">
+        update sy_user_info
+        set pwd = #{pwd,jdbcType=VARCHAR},
+            update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            update_user_ip = #{updateUserIp,jdbcType=VARCHAR},
+            update_dt = CURRENT_TIMESTAMP
+        where user_id = #{userId,jdbcType=VARCHAR}
+          and comp_cd = #{compCd,jdbcType=VARCHAR}
+    </update>
+
+    <!--사용자관리 저장-->
+    <insert id="insert" parameterType="map">
+        insert into sy_user_info (user_id, user_nm, comp_cd,
+                                  pwd, dept_cd, belo_comp_nm,
+                                  posi_nm, tel_no, email,
+                                  user_gb_cd, ente_dd, reti_dd,
+                                  use_yn, comu_mngr_yn, chei_yn,
+                                  bigo, dueup_dd, fnl_pwd_chng_dd,
+                                  pwd_rst_yn, pwd_lk_yn, frst_login_yn,
+                                  login_flr_tms, reg_user_id, reg_user_ip,
+                                  reg_dt)
+        values (#{userId,jdbcType=VARCHAR}, #{userNm,jdbcType=VARCHAR}, #{compCd,jdbcType=VARCHAR},
+                #{pwd,jdbcType=VARCHAR}, #{deptCd,jdbcType=VARCHAR}, #{beloCompNm,jdbcType=VARCHAR},
+                #{posiNm,jdbcType=VARCHAR}, #{telNo,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+                #{userGbCd,jdbcType=VARCHAR}, #{enteDd,jdbcType=VARCHAR}, #{retiDd,jdbcType=VARCHAR},
+                #{useYn,jdbcType=VARCHAR}, #{comuMngrYn,jdbcType=VARCHAR}, #{cheiYn,jdbcType=VARCHAR},
+                #{bigo,jdbcType=VARCHAR}, #{dueupDd,jdbcType=VARCHAR}, #{fnlPwdChngDd,jdbcType=VARCHAR},
+                #{pwdRstYn,jdbcType=VARCHAR}, #{pwdLkYn,jdbcType=VARCHAR}, #{frstLoginYn,jdbcType=VARCHAR},
+                0, #{regUserId,jdbcType=VARCHAR}, #{regUserIp,jdbcType=VARCHAR},
+                CURRENT_TIMESTAMP )
+    </insert>
+    <!--사용자관리 수정-->
+    <update id="update1ByPrimaryKey" parameterType="map">
+        update sy_user_info
+        set user_nm = #{userNm,jdbcType=VARCHAR},
+            comp_cd = #{compCd,jdbcType=VARCHAR},
+            dept_cd = #{deptCd,jdbcType=VARCHAR},
+            belo_comp_nm = #{beloCompNm,jdbcType=VARCHAR},
+            posi_nm = #{posiNm,jdbcType=VARCHAR},
+            tel_no = #{telNo,jdbcType=VARCHAR},
+            email = #{email,jdbcType=VARCHAR},
+            user_gb_cd = #{userGbCd,jdbcType=VARCHAR},
+            ente_dd = #{enteDd,jdbcType=VARCHAR},
+            reti_dd = #{retiDd,jdbcType=VARCHAR},
+            use_yn = #{useYn,jdbcType=VARCHAR},
+            comu_mngr_yn = #{comuMngrYn,jdbcType=VARCHAR},
+            chei_yn = #{cheiYn,jdbcType=VARCHAR},
+            bigo = #{bigo,jdbcType=VARCHAR},
+            update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            update_user_ip = #{updateUserIp,jdbcType=VARCHAR},
+            update_dt = CURRENT_TIMESTAMP
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="map">
+        delete from sy_user_info
+        where user_id = #{userId,jdbcType=VARCHAR}
+          and comp_cd = #{compCd,jdbcType=VARCHAR}
+    </delete>
+
+    <!--사용자 중복 확인-->
+    <select id="selectCountByPrimaryKey" resultMap="hashMapResultVO" >
+        SELECT /*EpComuCdMapper.selectCountByPrimaryKey*/
+            COUNT(*) AS CNT
+        FROM SY_USER_INFO
+        WHERE COMP_CD = #{compCd, jdbcType=VARCHAR}
+          AND USER_ID = #{userId, jdbcType=VARCHAR}
+    </select>
+
+    <!--팀장 중복 확인-->
+    <select id="selectCountByChei" resultMap="hashMapResultVO" >
+        SELECT /*EpComuCdMapper.selectCountByChei*/
+            COUNT(*) AS CNT
+        FROM SY_USER_INFO
+        WHERE CHEI_YN = 'Y'
+          AND COMP_CD = #{compCd, jdbcType=VARCHAR}
+          AND DEPT_CD = #{deptCd, jdbcType=VARCHAR}
+        group by DEPT_CD
+        HAVING COUNT(*) >= 1
+    </select>
+
+</mapper>

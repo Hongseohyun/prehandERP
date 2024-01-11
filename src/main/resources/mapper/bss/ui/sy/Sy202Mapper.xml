@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sy202">
+
+    <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+    <!--메뉴 조회-->
+    <select id="selectGrid" resultMap="hashMapResultVO">
+        SELECT /* sy202.selectGrid */ COMP_CD
+             , MENU_ID, MENU_NM
+             , MENU_ID AS OLD_MENU_ID
+             , UP_MENU_ID, MENU_LEVEL, MENU_GB
+             , MENU_IMG, MENU_IMG_OV, USE_YN, BIGO, SORTNO
+             , ROW_NUMBER() OVER(ORDER BY SORTNO, MENU_ID) AS RNUM
+          FROM SY_MENU_INFO
+         WHERE COMP_CD = #{compCd, jdbcType=VARCHAR}
+           AND (UPPER(MENU_ID) LIKE '%'||UPPER(#{menuinfo, jdbcType=VARCHAR})||'%' OR MENU_NM LIKE '%'||UPPER(#{menuinfo, jdbcType=VARCHAR})||'%')
+           AND MENU_LEVEL = '0'
+           AND MENU_GB = '1'
+         ORDER BY SORTNO, MENU_ID
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="map">
+        delete from sy_menu_info
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and menu_id = #{menuId,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="deleteByUpMenuId" parameterType="map">
+        delete from sy_menu_info
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and up_menu_id = #{upMenuId,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insert" parameterType="map">
+        insert into sy_menu_info (comp_cd, menu_id, menu_nm, up_menu_id,
+                                  menu_level, menu_gb, menu_img, menu_img_ov,
+                                  sortno, use_yn, bigo,
+                                  reg_user_id, reg_user_ip, reg_dt)
+        values (#{compCd,jdbcType=VARCHAR}, #{menuId,jdbcType=VARCHAR}, #{menuNm,jdbcType=VARCHAR}, #{upMenuId,jdbcType=VARCHAR},
+                #{menuLevel,jdbcType=NUMERIC}, #{menuGb,jdbcType=VARCHAR}, #{menuImg,jdbcType=VARCHAR}, #{menuImgOv,jdbcType=VARCHAR},
+                #{sortno,jdbcType=NUMERIC}, #{useYn,jdbcType=VARCHAR}, #{bigo,jdbcType=VARCHAR},
+                #{regUserId,jdbcType=VARCHAR}, #{regUserIp,jdbcType=VARCHAR}, CURRENT_TIMESTAMP )
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="map">
+        update sy_menu_info
+        set menu_nm = #{menuNm,jdbcType=VARCHAR},
+            up_menu_id = #{upMenuId,jdbcType=VARCHAR},
+            menu_level = #{menuLevel,jdbcType=NUMERIC},
+            menu_gb = #{menuGb,jdbcType=VARCHAR},
+            menu_img = #{menuImg,jdbcType=VARCHAR},
+            menu_img_ov = #{menuImgOv,jdbcType=VARCHAR},
+            sortno = #{sortno,jdbcType=NUMERIC},
+            use_yn = #{useYn,jdbcType=VARCHAR},
+            bigo = #{bigo,jdbcType=VARCHAR},
+            update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            update_user_ip = #{updateUserIp,jdbcType=VARCHAR},
+            update_dt = CURRENT_TIMESTAMP
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and menu_id = #{menuId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByPrimaryKey" parameterType="map" resultMap="hashMapResultVO">
+        select comp_cd, menu_id, menu_nm, up_menu_id, menu_level, menu_gb, sortno, use_yn,
+               bigo, menu_img, menu_img_ov
+        from sy_menu_info
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and menu_id = #{menuId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAll" resultMap="hashMapResultVO">
+        select comp_cd, menu_id, menu_nm, up_menu_id, menu_level, menu_gb, sortno, use_yn,
+               bigo, menu_img, menu_img_ov
+        from sy_menu_info
+    </select>
+
+    <!--사용자그룹별 메뉴목록-->
+    <select id="selectMenuListByUserGb" parameterType="map" resultMap="hashMapResultVO">
+        select comp_cd, menu_id, menu_nm, menu_img, menu_img_ov
+        from sy_menu_info
+        where comp_cd = #{compCd,jdbcType=VARCHAR}
+          and up_menu_id = '*'
+          and use_yn = 'Y'
+          and menu_id in ( select pgm_id from sy_menu_auth where user_gb_cd = #{userGbCd,jdbcType=VARCHAR} and menu_auth_yn='Y')
+        order by sortno, menu_id
+    </select>
+
+    <!--메뉴 중복 확인-->
+    <select id="selectCountByPrimaryKey" resultMap="hashMapResultVO">
+        SELECT COUNT(*) AS CNT
+        FROM SY_MENU_INFO
+        WHERE COMP_CD = #{compCd, jdbcType=VARCHAR}
+          AND MENU_ID = #{menuId, jdbcType=VARCHAR}
+    </select>
+</mapper>

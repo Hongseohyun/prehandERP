@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="codeHelpCmmCd">
+  
+  <resultMap id="hashMapResultVO" type="com.sjinc.bss.framework.data.HashMapResultVO"/>
+
+  <!-- code name start -->
+  <select id="selectCodeName01" resultMap ="hashMapResultVO">
+    select /*codeHelpCmmCd.selectCodeName01*/
+        cd as code, cd_nm as name,
+        attr_nm_1,attr_nm_2, attr_nm_3, attr_nm_4, attr_nm_5
+    from sy_cmm_cd
+    where comp_cd = #{compCd,jdbcType=VARCHAR}
+    <if test="cmminfo != null and cmminfo != ''">
+      and ( cd like '%'||#{cmminfo,jdbcType=VARCHAR}||'%'
+         OR cd_nm like '%'||#{cmminfo,jdbcType=VARCHAR}||'%')
+    </if>
+    <if test="cdGb != null and cdGb != ''">
+      and cd_gb = #{cdGb,jdbcType=VARCHAR}
+    </if>
+    <if test="attrNm1 != null and attrNm1 != ''">
+      and attr_nm_1 = #{attrNm1,jdbcType=VARCHAR}
+    </if>
+    <if test="attrNm2 != null and attrNm2 != ''">
+      and attr_nm_2 = #{attrNm2,jdbcType=VARCHAR}
+    </if>
+    <if test="attrNm3 != null and attrNm3 != ''">
+      and attr_nm_3 = #{attrNm3,jdbcType=VARCHAR}
+    </if>
+    <if test="attrNm4 != null and attrNm4 != ''">
+      and attr_nm_4 = #{attrNm4,jdbcType=VARCHAR}
+    </if>
+    <if test="attrNm5 != null and attrNm5 != ''">
+      and attr_nm_5 = #{attrNm5,jdbcType=VARCHAR}
+    </if>
+      and use_yn = 'Y'
+      order by sortno, cd
+  </select>
+
+  <select id="selectCodeName02" resultMap ="hashMapResultVO">
+    select /*codeHelpCmmCd.selectCodeName02*/
+           comp_cd as code,  comp_nm as name
+    from sy_comp_info
+    <trim prefix="where" prefixOverrides="and|or">
+      <if test="cmminfo != null and cmminfo != ''">
+        and ( comp_cd like '%'||#{cmminfo,jdbcType=VARCHAR}||'%'
+            OR comp_nm like '%'||#{cmminfo,jdbcType=VARCHAR}||'%')
+      </if>
+      <if test="compCd != null and compCd != ''">
+        and comp_cd = #{compCd,jdbcType=VARCHAR}
+      </if>
+      <if test="useYn != null and useYn != ''">
+        and use_yn = #{useYn,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    order by comp_cd
+  </select>
+
+  <select id="selectCodeName03" resultMap ="hashMapResultVO">
+    select /*codeHelpCmmCd.selectCodeName03*/
+        user_id as code,  user_nm as name
+    from sy_user_info
+    <trim prefix="where" prefixOverrides="and|or">
+      <if test="cmminfo != null and cmminfo != ''">
+        and ( user_id like '%'||#{cmminfo,jdbcType=VARCHAR}||'%'
+        OR user_nm like '%'||#{cmminfo,jdbcType=VARCHAR}||'%')
+      </if>
+      <if test="compCd != null and compCd != ''">
+        and comp_cd = #{compCd,jdbcType=VARCHAR}
+      </if>
+      <if test="useYn != null and useYn != ''">
+        and use_yn = #{useYn,jdbcType=VARCHAR}
+      </if>
+      <if test="deptCd != null and deptCd != ''">
+        and dept_cd = #{deptCd,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    order by code
+  </select>
+
+  <select id="selectCodeName04" resultMap ="hashMapResultVO">
+    select /*codeHelpCmmCd.selectCodeName04*/
+           dept_cd as code, dept_nm as name
+    from sy_dept_info
+    <trim prefix="where" prefixOverrides="and|or">
+      <if test="cmminfo != null and cmminfo != ''">
+        and ( dept_cd like '%'||#{cmminfo,jdbcType=VARCHAR}||'%'
+        OR dept_nm like '%'||#{cmminfo,jdbcType=VARCHAR}||'%')
+      </if>
+      <if test="compCd != null and compCd != ''">
+        and comp_cd = #{compCd,jdbcType=VARCHAR}
+      </if>
+      <if test="useYn != null and useYn != ''">
+        and use_yn = #{useYn,jdbcType=VARCHAR}
+      </if>
+      <if test="cotrTeamYm != null and cotrTeamYm != ''">
+        and cotr_team_yn = #{cotrTeamYm,jdbcType=VARCHAR}
+      </if>
+      <if test="poliTeamYn != null and poliTeamYn != ''">
+        and poli_team_yn = #{poliTeamYn,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    order by dept_cd
+  </select>
+
+  <select id="selectCodeName05" resultMap ="hashMapResultVO">
+    select /*codeHelpCmmCd.selectCodeName05*/
+           a.dept_cd ||'/'|| user_id as code,  b.dept_nm ||'/'|| user_nm as name
+    from sy_user_info a, sy_dept_info b
+    where a.comp_cd = b.comp_cd
+      and a.dept_cd = b.dept_cd
+    <if test="cmminfo != null and cmminfo != ''">
+        and ( a.dept_cd ||'/'|| user_id like '%'||#{cmminfo,jdbcType=VARCHAR}||'%'
+        OR b.dept_nm ||'/'|| user_nm like '%'||#{cmminfo,jdbcType=VARCHAR}||'%')
+    </if>
+    <if test="compCd != null and compCd != ''">
+        and a.comp_cd = #{compCd,jdbcType=VARCHAR}
+    </if>
+    order by code
+  </select>
+  <!-- code name end -->
+
+  <!-- select list start -->
+  <select id="selectList01" resultMap ="hashMapResultVO">
+    select cd as id, cd_nm as value,
+    attr_nm_1,attr_nm_2, attr_nm_3, attr_nm_4, attr_nm_5
+    from sy_cmm_cd
+    where comp_cd = #{compCd,jdbcType=VARCHAR}
+    <if test="cdGb != null and cdGb != ''">
+      and cd_gb = #{cdGb,jdbcType=VARCHAR}
+    </if>
+    <if test="attrNm1 != null and attrNm1 != ''">
+      and attr_nm_1 = #{attrNm1,jdbcType=VARCHAR}
+    </if>
+    <if test="attrNm2 != null and attrNm2 != ''">
+      and attr_nm_2 = #{attrNm2,jdbcType=VARCHAR}
+    </if>
+    <if test="attrNm3 != null and attrNm3 != ''">
+      and attr_nm_3 = #{attrNm3,jdbcType=VARCHAR}
+    </if>
+    <if test="attrNm4 != null and attrNm4 != ''">
+      and attr_nm_4 = #{attrNm4,jdbcType=VARCHAR}
+    </if>
+    <if test="attrNm5 != null and attrNm5 != ''">
+      and attr_nm_5 = #{attrNm5,jdbcType=VARCHAR}
+    </if>
+    and use_yn = 'Y'
+    order by sortno, cd
+  </select>
+
+  <select id="selectList02" resultMap ="hashMapResultVO">
+    select comp_cd as id,  comp_nm as value
+    from sy_comp_info
+    <trim prefix="where" prefixOverrides="and|or">
+      <if test="compCd != null and compCd != ''">
+        and comp_cd = #{compCd,jdbcType=VARCHAR}
+      </if>
+      <if test="useYn != null and useYn != ''">
+        and use_yn = #{useYn,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    order by comp_cd
+  </select>
+
+  <select id="selectList03" resultMap ="hashMapResultVO">
+    select user_id as id,  user_nm as value
+    from sy_user_info
+    <trim prefix="where" prefixOverrides="and|or">
+      <if test="compCd != null and compCd != ''">
+        and comp_cd = #{compCd,jdbcType=VARCHAR}
+      </if>
+      <if test="useYn != null and useYn != ''">
+        and use_yn = #{useYn,jdbcType=VARCHAR}
+      </if>
+      <if test="deptCd != null and deptCd != ''">
+        and dept_cd = #{deptCd,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    order by user_id
+  </select>
+
+  <select id="selectList04" resultMap ="hashMapResultVO">
+    select dept_cd as id,  dept_nm as value
+    from sy_dept_info
+    <trim prefix="where" prefixOverrides="and|or">
+      <if test="compCd != null and compCd != ''">
+        and comp_cd = #{compCd,jdbcType=VARCHAR}
+      </if>
+      <if test="useYn != null and useYn != ''">
+        and use_yn = #{useYn,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    order by dept_cd
+  </select>
+
+  <select id="selectList05" resultMap ="hashMapResultVO">
+    select a.dept_cd ||'/'|| user_id as id,  b.dept_nm ||'/'|| user_nm as value
+    from sy_user_info a, sy_dept_info b
+    where a.comp_cd = b.comp_cd
+    and a.dept_cd = b.dept_cd
+    order by value
+  </select>
+
+  <!-- select list end -->
+</mapper>

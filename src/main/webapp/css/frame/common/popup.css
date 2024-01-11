@@ -1,0 +1,220 @@
+.popupBackground {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 999999;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#alertPopupWindow, #confirmPopupWindow, #loadingPopupWindow, #helpPopupWindow {
+    display: none;
+}
+
+#alertContainer, #confirmContainer, #loadingContainer {
+    position: absolute;
+    width: 300px;
+    background-color: #fff;
+    top: calc(50% - 100px);
+    left: calc(50% - 150px);
+    padding-bottom: 15px;
+    border: 2px solid #FB7D10;
+}
+
+#loadingContainer {
+    top: calc(50% - 75px);
+    left: calc(50% - 75px);
+}
+
+#alertTitle, #confirmTitle {
+    width: 100%;
+    line-height: 40px;
+    height: 40px;
+    font-weight: bold;
+    color: #000;
+    font-size: 12pt;
+    background-color: #FB7D10;
+}
+
+#alertText, #confirmText {
+    width: 100%;
+    color: #000;
+    font-size: 11pt;
+    padding: 20px 20px 30px 20px;
+    white-space : pre-line;
+    word-break: break-all;
+}
+
+#alertClose, #confirmYes, #confirmNo {
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 32px;
+    background-image: -moz-linear-gradient(90deg, #f8f8f6, #f8f8f6);
+    background-image: -webkit-linear-gradient(90deg, #f8f8f6, #f8f8f6);
+    background-image: linear-gradient(90deg, #f8f8f6, #f8f8f6);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,startColorstr='#f8f8f6', endColorstr='#f8f8f6');
+    border: 1px solid #bbbcbc;
+    border-radius: 2px;
+    font-size: 11pt;
+    color: #53565a;
+}
+
+#alertClose:focus, #confirmYes:focus, #confirmNo:focus {
+    background-image: -moz-linear-gradient(90deg, #f8f8f6, #f8f8f6);
+    background-image: -webkit-linear-gradient(90deg, #f8f8f6, #f8f8f6);
+    background-image: linear-gradient(90deg, #f8f8f6, #f8f8f6);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,startColorstr='#f8f8f6', endColorstr='#f8f8f6');
+    border: 1px solid #bbbcbc;
+    border-radius: 2px;
+}
+
+#alertClose:hover, #confirmYes:hover, #confirmNo:hover {
+    background-image: -moz-linear-gradient(90deg, #53565a, #53565a);
+    background-image: -webkit-linear-gradient(90deg, #53565a, #53565a);
+    background-image: linear-gradient(90deg, #53565a, #53565a);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,startColorstr='#53565a', endColorstr='#53565a');
+    color: #fff;
+    border: 1px solid #37465a;
+}
+
+#alertClose:active, #confirmYes:active, #confirmNo:active {
+    background-image: linear-gradient(#53565a, #53565a);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#53565a', endColorstr='#53565a');
+    border: 1px solid #37465a;
+    color: #fff;
+}
+
+#confirmYes, #confirmNo {
+    width: 130px;
+}
+
+#helpContainer {
+    position: absolute;
+    /*border: 1px solid #FB7D10;*/
+    background-color: #ffffff;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5);
+    width: 450px;
+    height: 500px;
+    top: calc(50% - 250px);
+    left: calc(50% - 200px);
+}
+
+#helpTitle {
+    background-color: #FB7D10;
+    /*box-shadow: 0ox 0ox 5px 0px rgba(0, 0, 0, 0.4);*/
+    color: #000;
+    font-weight: bold;
+    font-size: 13pt;
+    height: 30px;
+    padding-top: 4px;
+    text-align: center;
+    padding-left: 10px;
+}
+
+#help_popup_close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 21px;
+    height: 21px;
+    background-image: url('/img/frame/popup/b_p_close.png');
+    background-color: transparent;
+    border: 0px;
+    cursor: pointer;
+}
+
+#help_popup_close:hover {
+    background-image: url('/img/frame/popup/b_p_close_ov.png');
+}
+
+#help_popup_close:active {
+    background-image: url('/img/frame/popup/b_p_close_ov.png');
+}
+
+#helpSearchArea {
+    margin-top: 5px;
+    margin-left: 5px;
+    height: 52px;
+    width: calc(100% - 10px);
+    background-color: #ffffff;
+    border: 1px solid #c6c6c6;
+    text-align: left;
+}
+
+#help_popup_search, #help_popup_select {
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 30px;
+    line-height: 30px;
+    min-width: 50px;
+    background-image: linear-gradient(#7a7a7a, #7a7a7a);
+    color: #eeeeee;
+    font-size: 13px;
+    font-weight: 400;
+    border: none;
+    border-radius: 2px;
+}
+
+#help_popup_search:hover, #help_popup_select:hover {
+    background-image: linear-gradient(#676767, #676767);
+    color: #fff;
+}
+
+#help_popup_search:active, #help_popup_select:active {
+    background-image: linear-gradient(#676767, #676767);
+    color: #fff;
+}
+
+#helpPopupWindow .searchRow {
+    display: inline-block;
+    /*width: calc(50% - 15px);*/
+    text-align: left;
+    margin-left: 5px;
+    /*overflow-x: auto;*/
+}
+
+#helpPopupWindow .searchRow>label {
+    display: inline-block;
+    /*width: 80px;*/
+    height: 16px;
+}
+
+#helpPopupWindow .searchRow>input {
+    height: 30px;
+    width: 120px;
+    color: #777;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    font-weight: 400;
+    padding-left: 4px;
+    line-height: 30px;
+}
+
+#helpPopupWindow .SumoSelect > .CaptionCont {
+    position: relative;
+    border: 1px solid #A4A4A4;
+    min-height: 40px;
+}
+
+#helpPopupWindow .SumoSelect > .CaptionCont > span {
+    color: #777;
+    font-size: 18px;
+    font-weight: 400;
+    height: 100%;
+    line-height: 30px;
+}
+
+#helpPopupWindow .SumoSelect.open > .optWrapper {
+    top: 40px;
+    display: block;
+}
+
+#helpPopupWindow .SumoSelect > .optWrapper > .options li label {
+    color: #777;
+    font-size: 18px;
+    font-weight: 400;
+    height: 30px;
+    line-height: 30px;
+}
